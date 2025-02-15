@@ -12,13 +12,23 @@ Typecho在docker中的运行环境 使用lighttpd+php8.3
 需要映射网站根目录路径 /app 到宿主机以实现持久化数据
 
 需要映射容器端口 `80`
+## 步骤
+
+### 创建目录
+
+赋予本地目录权限
+
+```bash
+mkdir data
+chown -R 82:82 ./data
+```
 
 使用`docker-compose.yaml`
 
 ```yaml
 services:
   typecho:
-    image: typecho
+    image: jkjoy/typecho-docker
     container_name: typecho
     restart: always
     ports:
@@ -34,7 +44,7 @@ services:
 ```yaml
 services:
   typecho:
-    image: typecho
+    image: jkjoy/typecho-docker
     container_name: typecho
     restart: always
     ports:
