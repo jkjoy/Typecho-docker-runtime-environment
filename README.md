@@ -88,3 +88,11 @@ networks:
   typecho_network:
     driver: bridge
 ```
+
+### 反向代理
+
+nginx可能需要加入
+```js
+    proxy_set_header X-Forwarded-Proto $scheme; 
+```
+来传递协议,避免出现协议混淆
