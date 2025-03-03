@@ -15,6 +15,7 @@ RUN apk add --no-cache \
     libpng-dev \
     icu-dev \
     libzip-dev \
+    freetype-dev \ 
     && docker-php-ext-install pdo_mysql mysqli gd intl opcache zip \
     && pecl install redis && docker-php-ext-enable redis \
     && apk del autoconf pkgconf make gcc libc-dev \
