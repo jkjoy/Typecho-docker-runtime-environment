@@ -12,6 +12,7 @@ RUN apk add --no-cache lighttpd \
     icu \
     libzip \
     freetype \
+    zip \
     # 构建依赖
     && apk add --no-cache --virtual .build-deps \
         autoconf \
