@@ -4,27 +4,48 @@ FROM php:8.3-fpm-alpine
 # 设置工作目录
 WORKDIR /app
 
-RUN apk add --no-cache \
-    lighttpd \
-    autoconf \
-    pkgconf \
-    make \
-    gcc \
-    libc-dev \
-    zlib-dev \
-    libpng-dev \
-    libwebp-dev \
-    libjpeg-turbo-dev \
-    icu-dev \
-    libzip-dev \
-    freetype-dev \ 
-    && docker-php-ext-install pdo_mysql mysqli gd intl opcache zip \
-    && pecl install redis && docker-php-ext-enable redis \
-    && apk del autoconf pkgconf make gcc libc-dev \
-    && rm -rf /var/cache/apk/* \
+RUN apk add --no-cache lighttpd \
+    # 运行时依赖
+    libpng \
+    libwebp \
+    libjpeg-turbo \
+    icu \
+    libzip \
+    freetype \
+    # 构建依赖
+    && apk add --no-cache --virtual .build-deps \
+        autoconf \
+        pkgconf \
+        make \
+        gcc \
+        libc-dev \
+        zlib-dev \
+        libpng-dev \
+        libwebp-dev \
+        libjpeg-turbo-dev \
+        icu-dev \
+        libzip-dev \
+        freetype-dev \
+    # 安装 PHP 扩展
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j$(nproc) \
+        pdo_mysql \
+        mysqli \
+        gd \
+        intl \
+        opcache \
+        zip \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    # 清理构建依赖
+    && apk del .build-deps \
+    && rm -rf /var/cache/apk/* /tmp/* \
+    # PHP 配置优化
     && cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
-    && sed -i 's/upload_max_filesize = .*/upload_max_filesize = 100M/' /usr/local/etc/php/php.ini \
-    && sed -i 's/post_max_size = .*/post_max_size = 100M/' /usr/local/etc/php/php.ini
+    && sed -i \
+        -e 's/upload_max_filesize = .*/upload_max_filesize = 100M/' \
+        -e 's/post_max_size = .*/post_max_size = 100M/' \
+        /usr/local/etc/php/php.ini
 
 # 配置 Lighttpd
 COPY lighttpd.conf /etc/lighttpd/lighttpd.conf
