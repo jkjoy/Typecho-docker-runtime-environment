@@ -13,11 +13,12 @@ RUN apk add --no-cache \
     libc-dev \
     zlib-dev \
     libpng-dev \
+    libwebp-dev \
+    libjpeg-turbo-dev \
     icu-dev \
     libzip-dev \
     freetype-dev \ 
     && docker-php-ext-install pdo_mysql mysqli gd intl opcache zip \
-        --with-freetype=/usr/include/freetype2 \ 
     && pecl install redis && docker-php-ext-enable redis \
     && apk del autoconf pkgconf make gcc libc-dev \
     && rm -rf /var/cache/apk/* \
