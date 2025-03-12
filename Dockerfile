@@ -36,8 +36,10 @@ RUN apk add --no-cache lighttpd \
         intl \
         opcache \
         zip \
+        exif \
     && pecl install redis \
     && docker-php-ext-enable redis \
+       exif \
     # 清理构建依赖
     && apk del .build-deps \
     && rm -rf /var/cache/apk/* /tmp/* \
